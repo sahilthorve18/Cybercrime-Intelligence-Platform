@@ -2,19 +2,45 @@
 function loadData() {
     const fileName = "data.csv";
 
-    Papa.parse(fileName, {
-        download: true,
-        header: true,
-        skipEmptyLines: true,
-        complete: function(results) {
-            console.log("Data successfully parsed:", results.data);
-            updateDashboard(results.data);
-        },
-        error: function(err) {
-            console.error("Error loading CSV:", err);
-            document.getElementById('riskStatus').innerText = "File Error";
-        }
-    });
+    // Try using fetch first, then fall back to Papa.parse
+    fetch(fileName)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.text();
+        })
+        .then(csv => {
+            Papa.parse(csv, {
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    console.log("Data successfully parsed:", results.data);
+                    updateDashboard(results.data);
+                },
+                error: function(err) {
+                    console.error("Error parsing CSV:", err);
+                    document.getElementById('riskStatus').innerText = "Parse Error";
+                }
+            });
+        })
+        .catch(err => {
+            console.error("Error loading CSV file:", err);
+            // Fallback: try PapaParse download method
+            Papa.parse(fileName, {
+                download: true,
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    console.log("Data successfully parsed via download:", results.data);
+                    updateDashboard(results.data);
+                },
+                error: function(err) {
+                    console.error("Error loading CSV with fallback:", err);
+                    document.getElementById('riskStatus').innerText = "File Error";
+                }
+            });
+        });
 }
 
 // 2. Function to calculate statistics
