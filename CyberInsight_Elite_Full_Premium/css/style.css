@@ -1,0 +1,157 @@
+:root {
+    --bg-dark: #0f172a;
+    --sidebar-bg: #1e293b;
+    --accent-blue: #38bdf8;
+    --accent-pink: #fb7185;
+    --text-main: #f1f5f9;
+    --card-bg: rgba(30, 41, 59, 0.7);
+}
+
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    display: flex;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    width: 240px;
+    height: 100vh;
+    background-color: var(--sidebar-bg);
+    padding: 20px;
+    position: fixed;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 100;
+}
+
+.sidebar h2 {
+    color: var(--accent-blue);
+    font-size: 1.3rem;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.sidebar a {
+    display: block;
+    color: #94a3b8;
+    padding: 12px;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    transition: 0.3s;
+}
+
+.sidebar a:hover {
+    background: rgba(56, 189, 248, 0.1);
+    color: var(--accent-blue);
+}
+
+/* Main Content Area */
+.main {
+    margin-left: 280px;
+    padding: 40px;
+    width: calc(100% - 320px);
+}
+
+/* Statistics Cards Row (Dashboard) */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+/* Premium Lift & Glow Card */
+.card {
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 12px 20px;
+    border-radius: 12px;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    cursor: pointer;
+}
+
+/* TARGET: Specifically makes the Vulnerability window small in Risk Analyzer */
+.main > .card {
+    max-width: 450px; /* Limits the width of the vulnerability section */
+    text-align: left;
+    padding: 15px 25px;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    border: 1px solid rgba(56, 189, 248, 0.5);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    background: rgba(30, 41, 59, 0.9);
+}
+
+/* Chart Layout - Dashboard & Risk page */
+.chart-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.chart-box {
+    background: var(--card-bg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 16px;
+    height: 320px; /* Kept the window size as requested */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.chart-box h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--accent-blue);
+    align-self: flex-start;
+}
+
+/* Graph Size Optimization */
+canvas {
+    width: 100% !important;
+    height: 100% !important; /* Forces graph to fill the window */
+    max-height: 250px !important; /* Increased from 180px/200px for a fuller look */
+    margin-top: 10px;
+}
+
+/* Risk Analyzer Specific Buttons/Inputs */
+input[type="checkbox"] {
+    accent-color: var(--accent-blue);
+    margin-right: 10px;
+    transform: scale(1.1);
+}
+
+.btn-summarize, button[onclick="calculateRisk()"] {
+    background: var(--accent-blue);
+    color: var(--bg-dark);
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 15px;
+}
+
+button:hover {
+    background: #ffffff;
+    box-shadow: 0 0 15px var(--accent-blue);
+}
+
+footer {
+    position: fixed;
+    bottom: 15px;
+    right: 30px;
+    font-size: 0.75rem;
+    color: #64748b;
+}
