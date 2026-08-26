@@ -1,4 +1,5 @@
 import { BookOpen, TrendingUp, Shield, AlertTriangle, Clock, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export const CaseStudy = () => {
   const caseStudies = [
@@ -133,8 +134,10 @@ export const CaseStudy = () => {
                       </div>
 
                       <button className="group/btn inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-xl font-semibold hover:shadow-xl hover:shadow-cyan-500/50 hover:scale-105 transition-all duration-300">
-                        Read Full Case Study
-                        <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
+                        <Link to={`/case-study/${study.id}`} className="flex items-center gap-2">
+                          Read Full Case Study
+                          <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
+                        </Link>
                       </button>
                     </div>
                   </div>

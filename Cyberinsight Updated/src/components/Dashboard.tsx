@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import Papa from 'papaparse';
 import { Doughnut, Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
-import { TrendingUp, AlertCircle, Lock, Activity } from 'lucide-react';
+import { TrendingUp, AlertCircle, Lock, Activity, BookOpen, ArrowRight } from 'lucide-react';
 
 ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
@@ -229,6 +230,30 @@ export const Dashboard = () => {
                 <span className="font-bold text-purple-400">Now</span>
               </li>
             </ul>
+          </div>
+        </div>
+
+        {/* Case Studies Widget */}
+        <div className="mt-12 bg-gradient-to-r from-cyan-600/20 via-blue-600/20 to-purple-600/20 border border-cyan-500/30 rounded-2xl p-8 backdrop-blur-xl">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="flex-shrink-0 w-16 h-16 rounded-2xl bg-cyan-500/10 flex items-center justify-center">
+                <BookOpen className="w-8 h-8 text-cyan-400" />
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-white mb-2">Learn from Real-World Cases</h3>
+                <p className="text-slate-300">
+                  Explore detailed case studies of cybersecurity incidents and defense strategies
+                </p>
+              </div>
+            </div>
+            <Link
+              to="/case-study"
+              className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-xl font-semibold hover:shadow-xl hover:shadow-cyan-500/50 hover:scale-105 transition-all duration-300 whitespace-nowrap"
+            >
+              Read Case Studies
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Link>
           </div>
         </div>
       </div>

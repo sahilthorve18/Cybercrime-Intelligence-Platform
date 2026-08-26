@@ -5,6 +5,7 @@ import { Dashboard } from './components/Dashboard';
 import { RiskAnalyzer } from './pages/RiskAnalyzer';
 import { Compliance } from './pages/Compliance';
 import { CaseStudy } from './pages/CaseStudy';
+import { CaseStudyDetail } from './pages/CaseStudyDetail';
 import './index.css';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
           <Route path="/risk-analyzer" element={<RiskAnalyzer />} />
           <Route path="/compliance" element={<Compliance />} />
           <Route path="/case-study" element={<CaseStudy />} />
+          <Route path="/case-study/:id" element={<CaseStudyDetail />} />
         </Routes>
       </div>
     </Router>
