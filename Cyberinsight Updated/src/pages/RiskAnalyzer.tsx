@@ -1,5 +1,6 @@
 import { Shield, AlertTriangle, TrendingUp, Lock, Eye, Zap, CheckCircle, XCircle, User, Users, Mail, Phone, MapPin, Briefcase, Download, FileText } from 'lucide-react';
 import { useState } from 'react';
+import jsPDF from 'jspdf';
 
 export const RiskAnalyzer = () => {
   const [riskScore, setRiskScore] = useState(0);
@@ -102,6 +103,12 @@ export const RiskAnalyzer = () => {
       return 'HIGH RISK';
     };
 
+    const getRiskColor = (score: number) => {
+      if (score < 30) return { bg: [220, 252, 231], border: [34, 197, 94], text: [21, 128, 61] };
+      if (score < 70) return { bg: [254, 249, 195], border: [234, 179, 8], text: [161, 98, 7] };
+      return { bg: [254, 226, 226], border: [239, 68, 68], text: [185, 28, 28] };
+    };
+
     const getSecurityStatus = (answer: string, type: string) => {
       switch(type) {
         case '2fa':
@@ -134,250 +141,217 @@ export const RiskAnalyzer = () => {
       }
     };
 
-    const reportHTML = `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Cybersecurity Risk Assessment Report - ${personalInfo.name}</title>
-  <style>
-    @media print {
-      body { margin: 0; padding: 20px; }
-      .no-print { display: none; }
-    }
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      line-height: 1.6;
-      color: #1e293b;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 40px 20px;
-      background: #f8fafc;
-    }
-    .header {
-      text-align: center;
-      border-bottom: 4px solid #0891b2;
-      padding-bottom: 20px;
-      margin-bottom: 30px;
-    }
-    .header h1 {
-      color: #0891b2;
-      margin: 0 0 10px 0;
-      font-size: 32px;
-    }
-    .header .subtitle {
-      color: #64748b;
-      font-size: 16px;
-    }
-    .user-info {
-      background: white;
-      border-left: 4px solid #0891b2;
-      padding: 20px;
-      margin-bottom: 30px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-    .user-info h2 {
-      margin-top: 0;
-      color: #0891b2;
-      font-size: 20px;
-    }
-    .user-info p {
-      margin: 8px 0;
-      color: #475569;
-    }
-    .risk-score {
-      background: ${riskScore < 30 ? '#dcfce7' : riskScore < 70 ? '#fef9c3' : '#fee2e2'};
-      border: 3px solid ${riskScore < 30 ? '#22c55e' : riskScore < 70 ? '#eab308' : '#ef4444'};
-      padding: 30px;
-      text-align: center;
-      margin-bottom: 30px;
-      border-radius: 8px;
-    }
-    .risk-score h2 {
-      margin: 0 0 10px 0;
-      font-size: 48px;
-      color: ${riskScore < 30 ? '#15803d' : riskScore < 70 ? '#a16207' : '#b91c1c'};
-    }
-    .risk-score .level {
-      font-size: 24px;
-      font-weight: bold;
-      color: ${riskScore < 30 ? '#15803d' : riskScore < 70 ? '#a16207' : '#b91c1c'};
-    }
-    .section {
-      background: white;
-      padding: 25px;
-      margin-bottom: 20px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-      border-radius: 8px;
-    }
-    .section h3 {
-      color: #0891b2;
-      margin-top: 0;
-      font-size: 20px;
-      border-bottom: 2px solid #e2e8f0;
-      padding-bottom: 10px;
-    }
-    .status-item {
-      padding: 15px;
-      margin-bottom: 15px;
-      border-left: 4px solid #cbd5e1;
-      background: #f8fafc;
-    }
-    .status-item.good { border-left-color: #22c55e; background: #f0fdf4; }
-    .status-item.warning { border-left-color: #eab308; background: #fefce8; }
-    .status-item.critical { border-left-color: #ef4444; background: #fef2f2; }
-    .status-item h4 {
-      margin: 0 0 8px 0;
-      color: #1e293b;
-      font-size: 16px;
-    }
-    .status-item p {
-      margin: 0;
-      color: #64748b;
-      font-size: 14px;
-    }
-    .recommendations {
-      background: #eff6ff;
-      border: 2px solid #3b82f6;
-      padding: 20px;
-      border-radius: 8px;
-    }
-    .recommendations h3 {
-      color: #1e40af;
-      margin-top: 0;
-    }
-    .recommendations ul {
-      margin: 10px 0;
-      padding-left: 25px;
-    }
-    .recommendations li {
-      margin: 8px 0;
-      color: #1e293b;
-    }
-    .footer {
-      text-align: center;
-      margin-top: 40px;
-      padding-top: 20px;
-      border-top: 2px solid #e2e8f0;
-      color: #64748b;
-      font-size: 14px;
-    }
-    .print-btn {
-      background: #0891b2;
-      color: white;
-      padding: 12px 30px;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      cursor: pointer;
-      margin: 20px auto;
-      display: block;
-    }
-    .print-btn:hover {
-      background: #0e7490;
-    }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <h1>🔒 Cybersecurity Risk Assessment Report</h1>
-    <p class="subtitle">CyberInsight Platform - Personal Risk Analysis</p>
-    <p class="subtitle">Generated on ${reportDate}</p>
-  </div>
+    // Create PDF
+    const pdf = new jsPDF();
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const margin = 20;
+    const contentWidth = pageWidth - 2 * margin;
+    let yPosition = 20;
 
-  <div class="user-info">
-    <h2>👤 User Information</h2>
-    <p><strong>Name:</strong> ${personalInfo.name}</p>
-    <p><strong>Email:</strong> ${personalInfo.email}</p>
-    <p><strong>Organization:</strong> ${personalInfo.organization}</p>
-    ${personalInfo.phone ? `<p><strong>Phone:</strong> ${personalInfo.phone}</p>` : ''}
-    ${personalInfo.location ? `<p><strong>Location:</strong> ${personalInfo.location}</p>` : ''}
-    ${personalInfo.role ? `<p><strong>Role:</strong> ${personalInfo.role}</p>` : ''}
-  </div>
+    const colors = getRiskColor(riskScore);
 
-  <div class="risk-score">
-    <h2>${riskScore}/100</h2>
-    <p class="level">${getRiskLevelText(riskScore)}</p>
-    <p style="margin-top: 15px; color: #475569;">Your overall cybersecurity risk assessment score</p>
-  </div>
+    // Header
+    pdf.setFillColor(8, 145, 178);
+    pdf.rect(0, 0, pageWidth, 40, 'F');
+    pdf.setTextColor(255, 255, 255);
+    pdf.setFontSize(24);
+    pdf.text('Cybersecurity Risk Assessment Report', pageWidth / 2, 20, { align: 'center' });
+    pdf.setFontSize(10);
+    pdf.text('CyberInsight Platform - Personal Risk Analysis', pageWidth / 2, 28, { align: 'center' });
+    pdf.text(`Generated on ${reportDate}`, pageWidth / 2, 35, { align: 'center' });
 
-  <div class="section">
-    <h3>📊 Security Assessment Details</h3>
+    yPosition = 50;
+
+    // User Information Section
+    pdf.setFillColor(255, 255, 255);
+    pdf.setDrawColor(8, 145, 178);
+    pdf.setLineWidth(1);
+    pdf.rect(margin, yPosition, contentWidth, 40, 'S');
     
-    <div class="status-item ${personalInfo.use2FA === 'yes' ? 'good' : personalInfo.use2FA === 'sometimes' ? 'warning' : 'critical'}">
-      <h4>🔐 Two-Factor Authentication</h4>
-      <p><strong>Your Answer:</strong> ${personalInfo.use2FA === 'yes' ? 'Yes, Always' : personalInfo.use2FA === 'sometimes' ? 'Sometimes' : 'No'}</p>
-      <p><strong>Status:</strong> ${getSecurityStatus(personalInfo.use2FA, '2fa')}</p>
-    </div>
+    pdf.setTextColor(8, 145, 178);
+    pdf.setFontSize(14);
+    pdf.text('User Information', margin + 5, yPosition + 10);
+    
+    pdf.setTextColor(30, 41, 59);
+    pdf.setFontSize(10);
+    yPosition += 18;
+    pdf.text(`Name: ${personalInfo.name}`, margin + 5, yPosition);
+    yPosition += 7;
+    pdf.text(`Email: ${personalInfo.email}`, margin + 5, yPosition);
+    yPosition += 7;
+    pdf.text(`Organization: ${personalInfo.organization}`, margin + 5, yPosition);
+    if (personalInfo.phone || personalInfo.location || personalInfo.role) {
+      yPosition += 7;
+      const additionalInfo = [
+        personalInfo.phone && `Phone: ${personalInfo.phone}`,
+        personalInfo.location && `Location: ${personalInfo.location}`,
+        personalInfo.role && `Role: ${personalInfo.role}`
+      ].filter(Boolean).join(' | ');
+      pdf.text(additionalInfo, margin + 5, yPosition);
+    }
 
-    <div class="status-item ${personalInfo.passwordStrength === 'strong' ? 'good' : personalInfo.passwordStrength === 'medium' ? 'warning' : 'critical'}">
-      <h4>🛡️ Password Strength</h4>
-      <p><strong>Your Answer:</strong> ${personalInfo.passwordStrength === 'strong' ? 'Strong (12+ chars)' : personalInfo.passwordStrength === 'medium' ? 'Medium (8-11 chars)' : 'Weak (short/simple)'}</p>
-      <p><strong>Status:</strong> ${getSecurityStatus(personalInfo.passwordStrength, 'password')}</p>
-    </div>
+    yPosition += 20;
 
-    <div class="status-item ${personalInfo.updateFrequency === 'weekly' || personalInfo.updateFrequency === 'monthly' ? 'good' : personalInfo.updateFrequency === 'yearly' ? 'warning' : 'critical'}">
-      <h4>📲 Software Updates</h4>
-      <p><strong>Your Answer:</strong> ${personalInfo.updateFrequency === 'weekly' ? 'Weekly' : personalInfo.updateFrequency === 'monthly' ? 'Monthly' : personalInfo.updateFrequency === 'yearly' ? 'Rarely' : 'Never'}</p>
-      <p><strong>Status:</strong> ${getSecurityStatus(personalInfo.updateFrequency, 'updates')}</p>
-    </div>
+    // Risk Score Section
+    pdf.setFillColor(colors.bg[0], colors.bg[1], colors.bg[2]);
+    pdf.setDrawColor(colors.border[0], colors.border[1], colors.border[2]);
+    pdf.setLineWidth(2);
+    pdf.rect(margin, yPosition, contentWidth, 35, 'FD');
+    
+    pdf.setTextColor(colors.text[0], colors.text[1], colors.text[2]);
+    pdf.setFontSize(36);
+    pdf.text(`${riskScore}/100`, pageWidth / 2, yPosition + 15, { align: 'center' });
+    pdf.setFontSize(16);
+    pdf.text(getRiskLevelText(riskScore), pageWidth / 2, yPosition + 25, { align: 'center' });
+    pdf.setFontSize(9);
+    pdf.setTextColor(71, 85, 105);
+    pdf.text('Your overall cybersecurity risk assessment score', pageWidth / 2, yPosition + 32, { align: 'center' });
 
-    <div class="status-item ${personalInfo.publicWifi === 'no' ? 'good' : personalInfo.publicWifi === 'yes-with-vpn' ? 'warning' : 'critical'}">
-      <h4>📡 Public WiFi Usage</h4>
-      <p><strong>Your Answer:</strong> ${personalInfo.publicWifi === 'no' ? 'No, I avoid it' : personalInfo.publicWifi === 'yes-with-vpn' ? 'Yes, with VPN' : 'Yes, without VPN'}</p>
-      <p><strong>Status:</strong> ${getSecurityStatus(personalInfo.publicWifi, 'wifi')}</p>
-    </div>
+    yPosition += 45;
 
-    <div class="status-item ${personalInfo.clickedSuspiciousLinks === 'no' ? 'good' : personalInfo.clickedSuspiciousLinks === 'unsure' ? 'warning' : 'critical'}">
-      <h4>🎣 Phishing Awareness</h4>
-      <p><strong>Your Answer:</strong> ${personalInfo.clickedSuspiciousLinks === 'no' ? 'Never clicked' : personalInfo.clickedSuspiciousLinks === 'unsure' ? 'Not sure' : 'Yes, clicked'}</p>
-      <p><strong>Status:</strong> ${getSecurityStatus(personalInfo.clickedSuspiciousLinks, 'phishing')}</p>
-    </div>
+    // Security Assessment Details
+    pdf.setTextColor(8, 145, 178);
+    pdf.setFontSize(14);
+    pdf.text('Security Assessment Details', margin, yPosition);
+    yPosition += 10;
 
-    <div class="status-item ${personalInfo.deviceSecurity === 'advanced' ? 'good' : personalInfo.deviceSecurity === 'basic' ? 'warning' : 'critical'}">
-      <h4>💻 Device Security</h4>
-      <p><strong>Your Answer:</strong> ${personalInfo.deviceSecurity === 'advanced' ? 'Full Suite' : personalInfo.deviceSecurity === 'basic' ? 'Basic Antivirus' : 'None'}</p>
-      <p><strong>Status:</strong> ${getSecurityStatus(personalInfo.deviceSecurity, 'security')}</p>
-    </div>
-  </div>
+    const assessments = [
+      {
+        title: 'Two-Factor Authentication',
+        answer: personalInfo.use2FA === 'yes' ? 'Yes, Always' : personalInfo.use2FA === 'sometimes' ? 'Sometimes' : 'No',
+        status: getSecurityStatus(personalInfo.use2FA, '2fa'),
+        level: personalInfo.use2FA === 'yes' ? 'good' : personalInfo.use2FA === 'sometimes' ? 'warning' : 'critical'
+      },
+      {
+        title: 'Password Strength',
+        answer: personalInfo.passwordStrength === 'strong' ? 'Strong (12+ chars)' : personalInfo.passwordStrength === 'medium' ? 'Medium (8-11 chars)' : 'Weak',
+        status: getSecurityStatus(personalInfo.passwordStrength, 'password'),
+        level: personalInfo.passwordStrength === 'strong' ? 'good' : personalInfo.passwordStrength === 'medium' ? 'warning' : 'critical'
+      },
+      {
+        title: 'Software Updates',
+        answer: personalInfo.updateFrequency === 'weekly' ? 'Weekly' : personalInfo.updateFrequency === 'monthly' ? 'Monthly' : personalInfo.updateFrequency === 'yearly' ? 'Rarely' : 'Never',
+        status: getSecurityStatus(personalInfo.updateFrequency, 'updates'),
+        level: personalInfo.updateFrequency === 'weekly' || personalInfo.updateFrequency === 'monthly' ? 'good' : personalInfo.updateFrequency === 'yearly' ? 'warning' : 'critical'
+      },
+      {
+        title: 'Public WiFi Usage',
+        answer: personalInfo.publicWifi === 'no' ? 'No, I avoid it' : personalInfo.publicWifi === 'yes-with-vpn' ? 'Yes, with VPN' : 'Yes, without VPN',
+        status: getSecurityStatus(personalInfo.publicWifi, 'wifi'),
+        level: personalInfo.publicWifi === 'no' ? 'good' : personalInfo.publicWifi === 'yes-with-vpn' ? 'warning' : 'critical'
+      },
+      {
+        title: 'Phishing Awareness',
+        answer: personalInfo.clickedSuspiciousLinks === 'no' ? 'Never clicked' : personalInfo.clickedSuspiciousLinks === 'unsure' ? 'Not sure' : 'Yes, clicked',
+        status: getSecurityStatus(personalInfo.clickedSuspiciousLinks, 'phishing'),
+        level: personalInfo.clickedSuspiciousLinks === 'no' ? 'good' : personalInfo.clickedSuspiciousLinks === 'unsure' ? 'warning' : 'critical'
+      },
+      {
+        title: 'Device Security',
+        answer: personalInfo.deviceSecurity === 'advanced' ? 'Full Suite' : personalInfo.deviceSecurity === 'basic' ? 'Basic Antivirus' : 'None',
+        status: getSecurityStatus(personalInfo.deviceSecurity, 'security'),
+        level: personalInfo.deviceSecurity === 'advanced' ? 'good' : personalInfo.deviceSecurity === 'basic' ? 'warning' : 'critical'
+      }
+    ];
 
-  <div class="recommendations">
-    <h3>💡 Personalized Recommendations</h3>
-    <ul>
-      ${personalInfo.use2FA !== 'yes' ? '<li><strong>Enable Two-Factor Authentication</strong> on all your accounts immediately. This is the single most effective security measure.</li>' : ''}
-      ${personalInfo.passwordStrength !== 'strong' ? '<li><strong>Strengthen Your Passwords:</strong> Use at least 12 characters with a mix of uppercase, lowercase, numbers, and symbols. Consider using a password manager.</li>' : ''}
-      ${personalInfo.updateFrequency === 'yearly' || personalInfo.updateFrequency === 'never' ? '<li><strong>Enable Automatic Updates:</strong> Keep your software and operating system up-to-date to protect against known vulnerabilities.</li>' : ''}
-      ${personalInfo.publicWifi === 'yes-no-vpn' ? '<li><strong>Use a VPN:</strong> When using public WiFi, always use a Virtual Private Network to encrypt your connection.</li>' : ''}
-      ${personalInfo.clickedSuspiciousLinks === 'yes' ? '<li><strong>Security Awareness Training:</strong> Take a phishing awareness course to better identify suspicious emails and links.</li>' : ''}
-      ${personalInfo.deviceSecurity !== 'advanced' ? '<li><strong>Install Comprehensive Security Software:</strong> Use a full security suite with antivirus, firewall, and real-time protection.</li>' : ''}
-      ${riskScore < 30 ? '<li><strong>Maintain Your Practices:</strong> You\'re doing great! Keep up these excellent security habits and stay informed about new threats.</li>' : ''}
-      <li><strong>Regular Security Audits:</strong> Review your security settings quarterly and update them as needed.</li>
-      <li><strong>Backup Your Data:</strong> Maintain regular backups of important files in a secure location.</li>
-      <li><strong>Stay Informed:</strong> Follow cybersecurity news and best practices to stay ahead of emerging threats.</li>
-    </ul>
-  </div>
+    assessments.forEach((assessment) => {
+      if (yPosition > 240) {
+        pdf.addPage();
+        yPosition = 20;
+      }
 
-  <div class="footer">
-    <p><strong>CyberInsight Platform</strong> - Cybercrime Intelligence & Risk Analysis</p>
-    <p>This report is for informational purposes only. Consult with a cybersecurity professional for comprehensive security assessment.</p>
-    <p>Report generated on ${reportDate}</p>
-  </div>
+      const bgColor = assessment.level === 'good' ? [240, 253, 244] : assessment.level === 'warning' ? [254, 252, 232] : [254, 242, 242];
+      const borderColor = assessment.level === 'good' ? [34, 197, 94] : assessment.level === 'warning' ? [234, 179, 8] : [239, 68, 68];
 
-  <button class="print-btn no-print" onclick="window.print()">🖨️ Print This Report</button>
-</body>
-</html>
-    `;
+      pdf.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
+      pdf.setDrawColor(borderColor[0], borderColor[1], borderColor[2]);
+      pdf.setLineWidth(1);
+      pdf.rect(margin, yPosition, contentWidth, 20, 'FD');
 
-    // Create a blob and download
-    const blob = new Blob([reportHTML], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `CyberSecurity_Risk_Report_${personalInfo.name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.html`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+      pdf.setTextColor(30, 41, 59);
+      pdf.setFontSize(11);
+      pdf.text(assessment.title, margin + 3, yPosition + 7);
+      pdf.setFontSize(9);
+      pdf.setTextColor(71, 85, 105);
+      pdf.text(`Answer: ${assessment.answer}`, margin + 3, yPosition + 13);
+      pdf.text(`Status: ${assessment.status}`, margin + 3, yPosition + 18);
+
+      yPosition += 23;
+    });
+
+    // Add new page for recommendations
+    pdf.addPage();
+    yPosition = 20;
+
+    // Recommendations Section
+    pdf.setFillColor(239, 246, 255);
+    pdf.setDrawColor(59, 130, 246);
+    pdf.setLineWidth(1.5);
+    pdf.rect(margin, yPosition, contentWidth, pageHeight - 60, 'S');
+
+    pdf.setTextColor(30, 64, 175);
+    pdf.setFontSize(14);
+    pdf.text('Personalized Recommendations', margin + 5, yPosition + 10);
+
+    yPosition += 18;
+
+    const recommendations = [];
+    if (personalInfo.use2FA !== 'yes') {
+      recommendations.push('Enable Two-Factor Authentication on all your accounts immediately. This is the single most effective security measure.');
+    }
+    if (personalInfo.passwordStrength !== 'strong') {
+      recommendations.push('Strengthen Your Passwords: Use at least 12 characters with a mix of uppercase, lowercase, numbers, and symbols. Consider using a password manager.');
+    }
+    if (personalInfo.updateFrequency === 'yearly' || personalInfo.updateFrequency === 'never') {
+      recommendations.push('Enable Automatic Updates: Keep your software and operating system up-to-date to protect against known vulnerabilities.');
+    }
+    if (personalInfo.publicWifi === 'yes-no-vpn') {
+      recommendations.push('Use a VPN: When using public WiFi, always use a Virtual Private Network to encrypt your connection.');
+    }
+    if (personalInfo.clickedSuspiciousLinks === 'yes') {
+      recommendations.push('Security Awareness Training: Take a phishing awareness course to better identify suspicious emails and links.');
+    }
+    if (personalInfo.deviceSecurity !== 'advanced') {
+      recommendations.push('Install Comprehensive Security Software: Use a full security suite with antivirus, firewall, and real-time protection.');
+    }
+    if (riskScore < 30) {
+      recommendations.push('Maintain Your Practices: You\'re doing great! Keep up these excellent security habits and stay informed about new threats.');
+    }
+    recommendations.push('Regular Security Audits: Review your security settings quarterly and update them as needed.');
+    recommendations.push('Backup Your Data: Maintain regular backups of important files in a secure location.');
+    recommendations.push('Stay Informed: Follow cybersecurity news and best practices to stay ahead of emerging threats.');
+
+    pdf.setTextColor(30, 41, 59);
+    pdf.setFontSize(10);
+    recommendations.forEach((rec, index) => {
+      if (yPosition > 260) {
+        pdf.addPage();
+        yPosition = 20;
+      }
+      const bullet = `${index + 1}. `;
+      const lines = pdf.splitTextToSize(rec, contentWidth - 15);
+      pdf.text(bullet, margin + 5, yPosition);
+      pdf.text(lines, margin + 12, yPosition);
+      yPosition += lines.length * 5 + 3;
+    });
+
+    // Footer
+    const footerY = pageHeight - 30;
+    pdf.setDrawColor(226, 232, 240);
+    pdf.setLineWidth(0.5);
+    pdf.line(margin, footerY, pageWidth - margin, footerY);
+    
+    pdf.setTextColor(100, 116, 139);
+    pdf.setFontSize(9);
+    pdf.text('CyberInsight Platform - Cybercrime Intelligence & Risk Analysis', pageWidth / 2, footerY + 7, { align: 'center' });
+    pdf.setFontSize(8);
+    pdf.text('This report is for informational purposes only. Consult with a cybersecurity professional for comprehensive security assessment.', pageWidth / 2, footerY + 12, { align: 'center' });
+    pdf.text(`Report generated on ${reportDate}`, pageWidth / 2, footerY + 17, { align: 'center' });
+
+    // Save PDF
+    const fileName = `CyberSecurity_Risk_Report_${personalInfo.name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
+    pdf.save(fileName);
   };
 
   const risk = getRiskLevel(riskScore);
