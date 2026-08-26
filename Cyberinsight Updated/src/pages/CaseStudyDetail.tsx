@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Calendar, Clock, Shield, AlertTriangle, TrendingUp, CheckCircle, XCircle, Target, Users, DollarSign, Lock } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Shield, AlertTriangle, TrendingUp, CheckCircle, Target, Users, DollarSign, Lock } from 'lucide-react';
 
 interface CaseStudyData {
   id: number;

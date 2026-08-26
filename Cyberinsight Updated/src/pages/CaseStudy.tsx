@@ -67,9 +67,9 @@ export const CaseStudy = () => {
             { label: 'Threats Prevented', value: '10K+', icon: Shield },
             { label: 'Money Saved', value: '$50M+', icon: TrendingUp },
             { label: 'Organizations', value: '500+', icon: AlertTriangle },
-          ].map((stat, idx) => (
+          ].map((stat) => (
             <div
-              key={idx}
+              key={stat.label}
               className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 text-center hover:border-cyan-500/50 hover:-translate-y-1 transition-all duration-300"
             >
               <stat.icon className="w-8 h-8 text-cyan-400 mx-auto mb-3" />
@@ -81,7 +81,7 @@ export const CaseStudy = () => {
 
         {/* Case Studies */}
         <div className="space-y-8">
-          {caseStudies.map((study, idx) => {
+          {caseStudies.map((study) => {
             const Icon = study.icon;
             return (
               <div
