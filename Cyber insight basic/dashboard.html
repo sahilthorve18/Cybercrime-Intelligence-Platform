@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Dashboard</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>CyberInsight</h2>
+    <a href="index.html">Home</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="risk.html">Risk Analyzer</a>
+    <a href="laws.html">IT Act</a>
+    <a href="case.html">Case Study</a>
+</div>
+
+<div class="main">
+    <div class="header-row">
+        <h1>Cyber Analytics Dashboard</h1>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSeQvxGkyI2_5zq1syzF2Cohl2JJdPvAj3WUycC-bzSLLgve2A/viewform?usp=publish-editor" target="_blank" class="btn-summarize" style="text-decoration: none; display: inline-block; text-align: center;">Submit New Response</a>
+    </div>
+
+    <div class="cards">
+        <div class="card">
+            <h3>Total Responses</h3>
+            <h1 id="counter">0</h1>
+        </div>
+        <div class="card">
+            <h3>Threat Encountered</h3>
+            <h1 id="threatRate" style="color: #fb7185;">0%</h1>
+        </div>
+        <div class="card">
+            <h3>2FA Usage</h3>
+            <h1 id="twoFactorRate" style="color: #38bdf8;">0%</h1>
+        </div>
+        <div class="card">
+            <h3>Overall Risk</h3>
+            <h1 id="riskStatus">Loading...</h1>
+        </div>
+    </div>
+
+    <div class="chart-container">
+        <div class="chart-box">
+            <h3>Risk Distribution</h3>
+            <p>At Risk vs. Safe Population</p>
+            <canvas id="pieChart"></canvas>
+        </div>
+        <div class="chart-box">
+            <h3>Key Security Metrics</h3>
+            <p>Comparison of Threat Data</p>
+            <canvas id="barChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="js/dashboard.js"></script>
+</body>
+</html>

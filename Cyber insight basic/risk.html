@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Risk Analyzer</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>CyberInsight</h2>
+    <a href="index.html">Home</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="risk.html">Risk Analyzer</a>
+    <a href="laws.html">IT Act</a>
+    <a href="case.html">Case Study</a>
+</div>
+
+<div class="main">
+    <h1>Interactive Cyber Risk Analyzer</h1>
+    
+    <div class="card" style="text-align: left; max-width: 600px; margin-bottom: 30px;">
+        <h3 style="color: var(--accent-blue); margin-bottom: 20px;">Check your vulnerabilities:</h3>
+        <label style="display: block; margin-bottom: 15px; cursor: pointer;">
+            <input type="checkbox" id="weakPass"> Use same password for multiple accounts
+        </label>
+        <label style="display: block; margin-bottom: 15px; cursor: pointer;">
+            <input type="checkbox" id="no2fa"> Do not use Two-Factor Authentication (2FA)
+        </label>
+        <label style="display: block; margin-bottom: 15px; cursor: pointer;">
+            <input type="checkbox" id="neverUpdate"> Never update passwords regularly
+        </label>
+        <label style="display: block; margin-bottom: 15px; cursor: pointer;">
+            <input type="checkbox" id="clickLinks"> Occasionally click on suspicious links/emails
+        </label>
+
+        <button onclick="calculateRisk()" class="btn-summarize" style="width: 100%; margin-top: 10px;">Analyze My Risk Profile</button>
+    </div>
+
+    <h2 id="riskResult" style="margin-bottom: 20px;"></h2>
+
+    <div class="chart-box" style="height: 500px; width: 100%; max-width: 900px;">
+        <h3 style="margin-bottom: 20px;">Detailed Risk Projection</h3>
+        <canvas id="riskChart"></canvas>
+    </div>
+</div>
+
+<script src="js/risk.js"></script>
+</body>
+</html>
